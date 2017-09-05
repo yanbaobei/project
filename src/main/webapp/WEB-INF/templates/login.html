@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title>Login Page | Amaze UI Example</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no">
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="alternate icon" type="image/png"
+	href="${ctxPath}/assets/i/favicon.png">
+<link rel="stylesheet" href="${ctxPath}/assets/css/amazeui.min.css" />
+<style>
+.header {
+	text-align: center;
+}
+
+.header h1 {
+	font-size: 200%;
+	color: #333;
+	margin-top: 30px;
+}
+
+.header p {
+	font-size: 14px;
+}
+</style>
+</head>
+<body>
+	<div class="header">
+		<div class="am-g">
+			<h1>TeacherRen 博客后台管理系统</h1>
+			<p></p>
+		</div>
+		<hr />
+	</div>
+	<div class="am-g">
+		<div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+			<div class="am-alert am-alert-success" id="errorMsg"
+				style="display: none;">
+				<button type="button" class="am-close">&times;</button>
+				<p></p>
+			</div>
+
+			<form method="post" class="am-form">
+				<label for="username">账户:</label> <input type="text" name="username"
+					id="username" value=""> <br> <label for="password">密码:</label>
+				<input type="password" name="password" id="password" value="">
+				<br>
+				<div class="am-cf">
+					<input id="btnLogin" type="button" value="登 录"
+						class="am-btn am-btn-primary am-btn-sm am-fl"> <input
+						type="button" value="忘记密码 ^_^? "
+						class="am-btn am-btn-default am-btn-sm am-fr">
+				</div>
+			</form>
+			<hr>
+			<p>© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
+		</div>
+	</div>
+
+	<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="${ctxPath}/assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="${ctxPath}/assets/js/jquery.min.js"></script>
+	<!--<![endif]-->
+	<script src="${ctxPath}/assets/js/amazeui.min.js"></script>
+
+	<script src="${ctxPath}/assets/js/app.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			//设置
+			$("#btnLogin").click(function() {
+				//获取用户名
+				var username = $("#username").val();
+				var password = $("#password").val();
+
+				$.ajax({
+					url : "${ctxPath}/login",
+					type : "post",
+					data : {
+						"username" : username,
+						"password" : password
+					},
+					success : function(data) {
+						if (data.errorCode != "0") {
+							//alert(data.errorMsg);
+							$('#errorMsg p').html(data.errorMsg);
+							$('#errorMsg').alert();
+							$('#errorMsg').show();
+							//TODO 第二次不起作用(警告框)
+							return;
+						}
+						//跳转页面
+						location.href = "${ctxPath}${servletPath}";
+					}
+				})
+			})
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<context:component-scan base-package="com.zhidisoft.blog.admin.controller"></context:component-scan>
+	<!-- 开启mvc注解 -->
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"> 
+		<property name="prefix" value="/WEB-INF/jsp/" /> <property name="suffix" 
+		value=".jsp" /> </bean> -->
+
+	<!-- 配置beetl http://ibeetl.com/guide/#beetl -->
+	<bean id="beetlConfig" class="org.beetl.ext.spring.BeetlGroupUtilConfiguration"
+		init-method="init">
+		<property name="root" value="/WEB-INF/templates"></property>
+	</bean>
+
+
+	<bean id="viewResolver" class="org.beetl.ext.spring.BeetlSpringViewResolver">
+		<property name="contentType" value="text/html;charset=UTF-8" />
+	</bean>
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+
+
+	<!-- 自动处理静态资源 -->
+	<mvc:default-servlet-handler />
+
+	<!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**/*" />
+			<!-- <mvc:exclude-mapping path="/**/*.css" /> <mvc:exclude-mapping path="/**/*.js" 
+				/> <mvc:exclude-mapping path="/**/*.png" /> <mvc:exclude-mapping path="/**/*.gif" 
+				/> <mvc:exclude-mapping path="/**/*.jpg" /> <mvc:exclude-mapping path="/**/*.jpeg" 
+				/> -->
+			<mvc:exclude-mapping path="/assets/**/*" />
+			<mvc:exclude-mapping path="/**/*login*" />
+			<!-- mvc:exclude-mapping不能用 TODO -->
+			<!-- <mvc:exclude-mapping path="/"/> <mvc:exclude-mapping path="/login"/> -->
+			<bean class="com.zhidisoft.blog.admin.interceptor.LoginInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+</beans>

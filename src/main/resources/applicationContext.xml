@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+          http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- TODO byType byName 区别 -->
+
+	<!-- 开启注解 -->
+	<context:annotation-config />
+	<context:component-scan base-package="com.zhidisoft.blog.admin"/>
+
+	<!-- <bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+	</bean> -->
+
+	<!-- 数据源 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<property name="url" value="jdbc:mariadb://localhost:3300/blog"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+
+	<!-- 配置SessionFactory -->
+	<!-- <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"> 
+		<property name="dataSource" ref="dataSource"></property> 扩展使用Hibernate原生的配置 
+		<property name="hibernateProperties"> <props> <prop key="dialect">org.hibernate.dialect.MariaDB53Dialect</prop> 
+		<prop key="show_sql">true</prop> </props> </property> 映射Entity <property 
+		name="packagesToScan" value="com.zhidisoft.blog.admin.entity"></property> 
+		</bean> 事务层 <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"> 
+		<property name="sessionFactory" ref="sessionFactory"></property> </bean> -->
+
+
+	<!-- http://www.cnblogs.com/hcbin/p/5397977.html -->
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- <bean id="articleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+		TODO 不能使用两个mapperInterface <property name="mapperInterface" value="com.zhidisoft.blog.admin.dao.ArticleMapper" 
+		/> <property name="sqlSessionFactory" ref="sqlSessionFactory" /> </bean> 
+		<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+		TODO 不能使用两个mapperInterface <property name="mapperInterface" value="com.zhidisoft.blog.admin.dao.ArticleMapper" 
+		/> <property name="mapperInterface" value="com.zhidisoft.blog.admin.dao.UserMapper" 
+		/> <property name="sqlSessionFactory" ref="sqlSessionFactory" /> </bean> -->
+
+	<!-- 扫描DAO -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.zhidisoft.blog.admin.dao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 事务(注解版) -->
+	<tx:annotation-driven />
+
+	<!-- 开启AOP注解 -->
+	<aop:aspectj-autoproxy />
+
+</beans>

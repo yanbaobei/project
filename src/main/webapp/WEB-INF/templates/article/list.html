@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>文章列表</title>
+</head>
+<body>
+<table border="1">
+<% for(article in list.list){ %>
+<tr>
+	<td>${article.title}</td>
+</tr>
+<% } %>
+</table>
+</body>
+</html>
